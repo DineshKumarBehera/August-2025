@@ -1,0 +1,155 @@
+DINESH KUMAR BEHERA
+BANGLORE, INDIA 560037 
++917019544404 | IAM.DINESH.BEHERA@GMAIL.COM 
+
+
+PROFESSIONAL SUMMARY
+Results-oriented Senior Software Engineer with 8.5 years of experience designing, developing, and deploying scalable Java applications using Spring Boot and Microservices architectures. Skilled in full-stack development with a strong grasp of frontend interfaces and backend system integration. Proven track record in enhancing performance, securing applications, and accelerating release cycles through automation and CI/CD practices. Experienced across diverse domains including Wealth Management and Automotive Diagnostics. Effective collaborator in Agile environments, delivering high-impact, user-focused solutions. Equally adept at leading development teams or independently executing complex projects under tight deadlines.
+
+SKILLS
+Backend Development
+ 	Security & API
+•	Java	•	JWT
+•	Spring Boot 	•	OAuth2
+•	Spring MVC	•	Spring Security
+•	RESTful APIs 	Databases
+•	Microservices architecture 	•	PostgreSQL
+Front End	•	MySQL
+•	HTML	•	Oracle
+•	CSS	Cloud Platforms
+•	Java Script	•	AWS
+WORK HISTORY
+Capgemini Technology Services 
+Senior Software Engineer // BANGLORE // November 2021 to Current
+Client: Royal Bank of Canada (RBC)
+Project: Wealth Management(ROADTOCLOUD)
+•	This is a insurance processing system automates the end-to-end lifecycle of insurance requests and claims through a sequenced workflow of specialized services. The platform handles both new policy applications and claim settlements using a standardized ticket-based processing model.
+•	ROAD is a web-based application designed to track physical security certificates. Initially developed to meet the needs of RBC's operations and alternative investment group, it has since undergone multiple upgrades to stay current with evolving technology and user requirements. Today, it supports approximately 75 users within the organization.
+•	This system manages the full lifecycle of insurance requests and claims through five sequenced microservices (Submission → Validation → Payment → Processing → Fulfillment), using Spring Boot for backend orchestration and React for the frontend interface, all containerized on a modern cloud platform.
+•	There were a growing number of non-compliance issues related to its legacy nature, and concerns were raised about platform flexibility. As a result, both the business and IT decided to identify this application as a candidate for modernization, as part of the US Wealth Management's security and robustness program. The objective of the project was to migrate the application to a modern cloud platform, upgrade its technology stack and address all existing concerns.
+•	We embarked on a remarkable journey of end-to-end development of the ROAD legacy application. By harnessing the power of Spring Boot microservices and React, we successfully modernized the entire system while delivering unparalleled efficiency and user experience.
+•	Designed and developed RESTful APIs and Graph QL endpoints to facilitate efficient data exchange between React-based front-end applications and backend microservices. Ensured API consistency, scalability, and high-quality documentation by implementing Open API specifications and utilizing Swagger. Optimized API performance and maintained clean, scalable code to support seamless integration and long-term maintainability.
+•	Implemented robust security measures using Spring Security, integrating OAuth2 with JWT, and experienced with SAML/Open id Connect, ensuring compliance with financial industry standards and safeguarding sensitive client data.
+•	Implemented decoupled, resilient systems using messaging queues like Apache Kafka and Rabbit mq, enhancing system responsiveness, Audit, and asynchronous processing capabilities.
+•	Designed, built, and maintained end-to-end CI/CD pipelines using Jenkins, GitLab CI/CD, and GitHub Actions. Automated build, comprehensive testing (JUnit 5), security scanning (soar, OWASP Dependency-Check), and deployment processes across multiple environments.
+•	Configured and utilized monitoring tools like Prometheus and Grafana for real-time insights into application performance and system health. Implemented logging solutions using Splunk, Fluent Bit.
+•	Provided technical guidance, conducted code reviews, facilitated pair programming, and mentored junior developers, fostering a culture of high code quality, collaboration, and continuous learning.
+	Key technologies: Java, Spring Boot, Microservices, REST, Spring Security, OAuth2, JWT, Apache Kafka, Cassandra, Redis, AWS (EKS, EC2, S3, IAM), Docker, Kubernetes, Terraform, Jenkins, GitHub Actions, Prometheus, Grafana.
+WIPRO Technology 
+Senior Software Engineer // BANGLORE // March 2018 to September 2021
+Client: Comcast Corporation
+Project: CAMUNDA NETWORK OM
+•	Contributed significantly as a Senior Developer to an automated network operations platform that streamlined commissioning and management of network equipment (routers, switches), replacing manual workflows to drastically reduce errors and operational time.
+•	Designed and built the backend microservices architecture using Spring Boot, deploying containerized applications on AWS; developed robust REST APIs capable of handling high-volume network configuration requests.
+•	Modernized network device management practices by implementing standardized configuration models, transitioning away from manual CLI commands towards more reliable, automated processes.
+•	Enhanced application responsiveness and performance through strategic caching implementations and database query optimization.
+•	Established robust CI/CD pipelines enabling frequent and reliable feature delivery; implemented comprehensive monitoring and logging solutions for rapid identification and resolution of production issues.
+•	Enabled automated provisioning capabilities, directly supporting transition towards next-generation network architectures.
+•	Led an Agile development team, coordinating sprint activities to ensure on-schedule delivery of quality features, and improved incident response processes for faster issue resolution.
+•	Reduced average provisioning time by over 65%, improving deployment speed and operational efficiency across multiple network teams.
+	Key technologies: Java, Spring Boot, Microservices, REST, Spring Security, OAuth2, JWT, Apache Kafka, Cassandra, Redis, AWS (EKS, EC2, S3, IAM), Docker, Kubernetes, Terraform, Jenkins, GitHub Actions, Prometheus, Grafana.
+Ascendum Solutions India
+Senior Software Engineer // BANGLORE // November 2017 to January 2018
+Senior Developer | Client: Volvo Trucks
+Project: Diagnostic Trouble Codes (DTC) Management System
+•	Served as a Senior Developer on Volvo's global diagnostic platform, enhancing the automation of fault code interpretation and troubleshooting workflows.
+•	Designed and architected the system's core using a microservices approach with Java/Spring Boot and Hibernate, deployed in Docker containers orchestrated by Kubernetes (AWS EKS & Azure AKS).
+•	Developed REST APIs to ensure seamless data exchange between the new platform and legacy vehicle ECU/dealer systems; utilized Graph QL for complex diagnostic data queries.
+•	Optimized system performance via database query tuning and caching implementations; established CI/CD pipelines with automated testing to enable frequent and reliable production releases.
+•	Integrated key technologies including Kafka for real-time truck telemetry streaming (engine RPM, fault codes), Elasticsearch for enhanced logging and diagnostics visualization, and robust OAuth2/JWT security (AWS KMS signed) alongside role-based access controls.
+•	Deployed the multi-cloud solution across AWS (EC2, Lambda, S3) and Azure (Functions, Blob Storage) to ensure high scalability and meet EU data residency regulations.
+•	Contributed to the development of predictive diagnostics features and utilized AWS IoT Green grass for specific on-board vehicle data processing tasks.
+•	Collaborated within the Agile team, translating requirements into technical solutions and creating comprehensive documentation and training materials for engineering teams.
+	Key technologies: Java, Spring Boot, Hibernate, Microservices, Docker, Kubernetes, RESTful APIs, Caching, CI/CD, Automated Testing, Logging, Monitoring.
+Quess Corp
+Senior Software Engineer // BANGLORE // September 2016 to September 2017
+Client: INTRADO CORPORATION (WEST) 
+Project: Meridian Data Provisioning System
+•	Developed a multilingual intranet application that significantly enhanced global data provisioning capabilities and internal collaboration.
+•	Designed and implemented a scalable, fault-tolerant microservices architecture using Spring Boot and React, ensuring high application availability.
+•	Developed secure and efficient RESTful APIs with Spring Boot for reliable data exchange between microservices.
+•	Built responsive, dynamic front-end interfaces using front end technology to improve user interaction and streamline data delivery across global
+•	Collaborated effectively with both technical and non-technical stakeholders to translate complex business needs into actionable technical specifications.
+•	Contributed to operational stability by resolving production issues and implementing necessary fixes and improvements.
+•	Implemented JWT-based authentication across microservices to safeguard sensitive emergency communication data and user credentials.
+•	Optimized database performance for high-volume transactions by designing effective PostgreSQL schemas and implementing proper indexing and query tuning.
+•	Established a clear API versioning strategy to maintain backward compatibility throughout system upgrades and feature rollouts.
+•	Developed an automated testing framework using JUnit , achieving 85% code coverage for critical microservices and enhancing code quality.
+	Key technology: Java, Spring Boot, Microservices, REST API, Hibernate, Oracle, PostgreSQL, Elasticsearch, JWT, JUnit.
+EDUCATION
+Bachelor of Science - Computer Science & Engineering 
+Biju Patnaik University of Technology (BPUT) // BHUBANESWAR // January 2012
+
+
+Project Flow :
+
+A[Insurer] -->|Submit Request| B(SubmissionService)
+B -->|Create Ticket| C(ValidationService)
+C -->|Approve/Reject| D{Decision}
+D -->|Valid| E(PaymentService)
+D -->|Invalid| M[Notify Insurer]
+E -->|Process Funds| F(ProcessingService)
+F -->|Settlement Logic| G(FulfillmentService)
+G -->|Complete| H[Policy/Claim Closure]
+
+
+
+Above is my resume details, Create a mock interview code with explanation, make it in such a way that I can understand it even just by listening to it. with in-depth knowledge on the question related to the below topic:
+
+
+
+Show a conversation between the interviewer and a highly skilled Java candidate who is currently working as a team lead on the RBC Wealth Management project. The candidate has 8.8 years of experience in Java. Based on the experience on the RBC Wealth Management project, the candidate will delve deep into various topics. This conversation will be structured in such a way that I will be able to record it, listen to it, and reflect on it while meditating at night. The goal is that all the information is stored in my subconscious mind. Feel like you are the candidate, answering each topic with great detail and expertise, providing a full understanding of every aspect. Don't use (*) asterisk .
+
+
+```
+How did you use Terraform as an Infrastructure as Code (IaC) approach in your RBC project?
+
+```
+
+
+
+/\
+|
+|
+|
+|
+|
+
+
+
+
+Explain the above things as per above pattern in its transliteration nature like below approach, make voice in Hindi
+
+You have to use a correct technique called transliteration In this technique, you use English letters but pronounce them like Hindi? By nature, you write technical words and specific English but pronounce Hindi words in natural and practical language This is a great way to help other people understand technical subjects, especially when the technical subjects require grammar in Hindi
+
+Example : mai khana khata hun --> Looks like English letters but is pronounced like Hindi
+
+
+
+Note:
+Don't talk in English.Don't again translate to English just talk all things in Hindi.
+Make it like I'm talking to myself and asking myself questions and answering them.
+
+Caution:1
+=========
+Explain every important thing with their in depth and hidden root concept.
+
+Aur Aap "Hinglish" ka istemaal kariye jismein hum Transliteration, Code-Mixing, aur Creative Neologism jaisi advanced techniques ko milaakar technical concepts ko aasan bana rahe hain.
+Example:
+instead of pronouns "aksharon" pronouns "Leteron".
+"Humara core logic hi yahi hai."
+
+Caution:2
+=========
+sambodhit ish tarh nahi kijiye : 
+for example:
+"aap kehete hei" ke bajaen "mein keheta hun"
+"aapako kehena hei" ke bajaen "mujhe kehena hei"  ...ish tarh se
+"hum"  ke bajaen "mein"
+
+
+Har baat ko sambodhit ish tarh nahi kijiye : 
+"aap" ke bajaye "mein" lagaiye
+"aapko" ke bajaye "mujhe" lagaiye 
+"aapke" ke bajaye "mera" ...ish tarh se
+mein chahta hun ki samvad (conversation) mein doosre vyakti ke bajaye Mujhe khud ko kendrit kiya jaye.

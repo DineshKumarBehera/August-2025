@@ -1,0 +1,194 @@
+Sir, jaise hi user login par click karta hai, humara React frontend user ko turant RBC ke central Authorization Server par redirect kar deta hai. Is redirect URL mein hum kuch zaroori jaankari bhejte hain, jaise client_id (jo batata hai ki 'Wealth Management Portal' request kar raha hai), redirect_uri (login ke baad user ko kahan wapas bhejna hai), response_type=code (jo batata hai ki humein badle mein ek Authorization Code chahiye), aur scope (ki humein user ki kaunsi jaankari chahiye, jaise 'profile' ya 'read_portfolio').
+
+https://auth.rbc.com/oauth/authorize?
+  response_type=code
+  &client_id=wealth-mgmt-client
+  &redirect_uri=http://localhost:8080/callback
+  &scope=profile read_portfolio
+  
+
+---> React app woh Authorization Code humare Spring Boot backend ko deta hai. Fir humara backend, parde ke peeche, Authorization Server ke token endpoint par ek POST request karta hai. Is request ki body mein hum grant_type=authorization_code, woh mila hua code, redirect_uri, aur sabse zaroori, client_id aur client_secret bhejte hain.
+
+@RestController
+public class OAuthController {
+
+    @Value("${oauth.client-id}")
+    private String clientId;
+
+    @Value("${oauth.client-secret}")
+    private String clientSecret;
+
+    @Value("${oauth.token-uri}")
+    private String tokenUri;
+
+    @Value("${oauth.redirect-uri}")
+    private String redirectUri;
+
+    @PostMapping("/exchange-code")
+    public ResponseEntity<?> exchangeAuthorizationCode(@RequestParam("code") String code) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("code", code);
+        params.add("redirect_uri", redirectUri);
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(tokenUri, request, Map.class);
+            return ResponseEntity.ok(response.getBody());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to exchange code: " + ex.getMessage());
+        }
+    }
+}
+
+
+
+--->  Badle mein, Authorization Server sab kuch verify karne ke baad humein do bahut hi keemti cheezein deta hai: ek Access Token aur ek Refresh Token.
+
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "refresh_token": "dGVzdF9yZWZyZXNoX3Rva2Vu",
+  "scope": "read_portfolio profile"
+}
+
+--->woh Access Token ek digitally signed JWT hota hai. Humara Spring Boot backend us JWT ko React app ko bhej deta hai, jo use securely (memory mein ya secure cookie mein) store kar leta hai. Ab, jab bhi user ko apna portfolio dekhna hota hai, toh React app /api/portfolio par call karta hai aur request ke Authorization header mein yeh JWT bhejta hai. 
+
+GET /api/portfolio
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+
+
+--->Humari API Gateway ya har microservice mein Spring Security ka ek filter laga hota hai jo is token ko intercept karta hai. 
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // Step 1: Spring ko batao ki security on karni hai.
+        // Step 2: Rules ki kitaab kholo.
+        http
+            .authorizeHttpRequests(auth -> auth
+                // Rule 1: Jo bhi "/api/public" par aaye, use andar aane do. Koi token nahi chahiye.
+                .requestMatchers("/api/public/**").permitAll() 
+                // Rule 2: Baaki kisi bhi request ke liye, pehle pehchan patra (token) check karo.
+                .anyRequest().authenticated() 
+            )
+            // Step 3: Pehredaar (filter) ko batao ki pehchan patra (token) ek JWT hoga.
+            // Aur iski jaanch-padtaal OAuth2 ke niyamon ke hisaab se karna.
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt() // Yeh line hi woh jaadu hai!
+            );
+
+        return http.build(); // Rules ki kitaab band karke pehredaar ko de do.
+    }
+}
+
+--->Woh uski signature ko humare paas maujood Public Key se validate karta hai, expiry check karta hai, aur agar sab theek hai, toh request ko aage badhne deta hai. Isse humein baar-baar database check karne ki zaroorat nahi padti.
+
+application.properties :
+spring.security.oauth2.resourceserver.jwt.public-key-location=classpath:public.pem
+
+1. public.pem file:
+Isme Authorization Server ka public RSA key hota hai.
+Spring Security is key ka use karta hai JWT signature verify karne ke liye.
+2. Spring Boot as Resource Server:
+Jaise hi koi request aati hai (e.g., /api/portfolio), Spring:
+JWT Token ko extract karta hai.
+Signature ko public.pem ke against verify karta hai.
+JWT ke andar ki expiry (exp) aur issued time (iat) bhi check karta hai.
+Agar sab valid hai: request controller tak jaati hai.
+Agar invalid hai: 401 Unauthorized return hota hai.
+
+
+--->humara flow is tarah se design kiya gaya hai. Jab React app API call karta hai aur use 401 Unauthorized error milta hai (kyunki Access Token expire ho gaya hai), tab woh humare backend ke /refresh_token endpoint ko call karta hai. Humara backend database se user ka Refresh Token nikalta hai, aur Authorization Server ko bhejkar ek naya, fresh Access Token le aata hai. Yeh naya token phir React app ko de diya jaata hai, jo apni failed API call ko dobara, is naye token ke saath, try karta hai. User ke liye sab kuch seamless hota hai, use lagta hai woh hamesha logged in hai.
+
+
+
+@RestController
+public class TokenRefreshController {
+
+    // Main properties file se apni secret jaankari utha raha hoon.
+    @Value("${oauth.client-id}")
+    private String clientId;
+
+    @Value("${oauth.client-secret}")
+    private String clientSecret;
+
+    @Value("${oauth.token-uri}")
+    private String tokenUri;
+
+    // Main ek naya darwaza (/refresh-token) bana raha hoon, jo sirf POST request lega.
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestParam("refresh_token") String refreshToken) {
+        
+        // Step 1: Ek 'phone' (RestTemplate) taiyaar karo jisse main Authorization Server ko call karunga.
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Step 2: Call karne se pehle, 'envelope' (Headers) taiyaar karo.
+        // Main bata raha hoon ki main form data bhej raha hoon.
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        // Step 3: 'Form' (Body) taiyaar karo. Ismein saari zaroori cheezein daalo.
+        MultiValueMap<String, String> formParams = new LinkedMultiValueMap<>();
+        formParams.add("grant_type", "refresh_token"); // Main bata raha hoon ki main refresh token ka istemaal kar raha hoon.
+        formParams.add("refresh_token", refreshToken); // Yeh raha saboot (purana refresh token).
+        formParams.add("client_id", clientId);        // Yeh main hoon (meri pehchan).
+        formParams.add("client_secret", clientSecret);  // Yeh raha meri pehchan ka password.
+
+        // Step 4: 'Envelope' aur 'Form' ko ek saath pack karke (HttpEntity) request taiyaar karo.
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formParams, headers);
+
+        // Step 5: Ab call lagao! Aur jawab ka intezaar karo.
+        try {
+            // Main 'tokenUri' par POST call kar raha hoon, apna packed request bhej raha hoon, 
+            // aur ummeed kar raha hoon ki jawab mein ek Map (JSON) aayega.
+            ResponseEntity<Map> response = restTemplate.postForEntity(tokenUri, request, Map.class);
+            // Agar sab theek raha, toh jo bhi jawab aaya, use waisa ka waisa frontend ko bhej do.
+            return ResponseEntity.ok(response.getBody());
+        } catch (Exception ex) {
+            // Agar call fail ho gayi (e.g., refresh token invalid tha), toh frontend ko saaf-saaf bata do
+            // ki "Bhai, gadbad ho gayi hai, user ko ab sach mein login karna padega".
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token refresh failed: " + ex.getMessage());
+        }
+    }
+}
+
+Refresh Token Flow :
+====================
+React app ko 401 error mila.
+React app backend ke /refresh-token endpoint par ek POST request bhejta hai (bina kisi body ya parameter ke).
+Aapka TokenRefreshController request mein se HttpOnly cookie se Refresh Token nikalta hai.
+Backend us Refresh Token ka istemal karke Authorization Server se naya Access Token leta hai.
+Backend naye Access Token ko JSON response mein React app ko bhej deta hai.
+React app naye token se apni failed API call dobara try karta hai.
+
+
+Access Token mei kya kya hota hei?
+
+{
+  "iss": "https://auth.rbc.com",  // Issuer: Token kisne issue kiya (RBC ka Authorization Server)
+  "sub": "user-123-abc",          // Subject: Token kiske liye hai (User ki unique ID)
+  "aud": "wealth-management-api", // Audience: Token kahan istemal ho sakta hai (Aapki API)
+  "exp": 1678886400,              // Expiration Time: Token kab expire hoga (Unix timestamp)
+  "iat": 1678882800,              // Issued At: Token kab banaya gaya tha
+  "jti": "a-unique-guid-1234",    // JWT ID: Is token ki unique ID
+  
+  // Custom Claims (Aap apni zaroorat ke hisaab se daal sakte hain)
+  "scope": "read_portfolio write_trade", // User ko kya-kya karne ki permission hai
+  "roles": ["CLIENT_ADVISOR", "USER"],   // User ka role kya hai
+  "preferred_username": "john.doe"       // User ka naam
+}

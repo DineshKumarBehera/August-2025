@@ -1,0 +1,21 @@
+Can you tell us how you migrated from monolith to microservices step by step using the tangible pattern?
+
+Example Tangible Migration Map:
+|   Phase   |   Module             |   Pattern / Strategy                               |   Tools Involved                              |
+| --------: | -------------------- | -------------------------------------------------- | --------------------------------------------- |
+|         1 | User Authentication  | Strangler Fig Pattern, Anti-Corruption Layer (ACL) | Spring Boot, Spring Cloud Config              |
+|         2 | Insurance Catalog    | Decompose by Business Capability                   | REST API, OpenAPI/Swagger, Docker             |
+|         3 | Insurance Management | Event-Driven Architecture, CQRS                    | Apache Kafka, PostgreSQL, Spring Cloud Stream |
+|         4 | Payments             | Database per Service, API Gateway                  | gRPC, Kong or Istio API Gateway               |
+
+
+
+Tools & Tech Stack Suggestions:
+| Area             | Tools/Tech                  |
+| ---------------- | --------------------------- |
+| Containerization | Docker, Podman              |
+| Orchestration    | Kubernetes, Helm            |
+| Service Mesh     | Istio, Linkerd              |
+| Observability    | Prometheus, Grafana, ELK    |
+| CI/CD            | GitHub Actions, Jenkins     |
+| Communication    | REST, gRPC, Kafka, RabbitMQ |
