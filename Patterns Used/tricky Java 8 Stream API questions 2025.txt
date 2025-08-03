@@ -1,0 +1,99 @@
+Bilkul! Isi pattern ko follow karte hue, yahaan functional interface ke extension se jude 3 tricky questions hain jo 2025 ke interviews mein aapki deep understanding ko test kar sakte hain.
+1. Functional Interface Extend Karke Naya Abstract Method Add Karna
+Q: Agar ek functional interface 'Parent' hai, aur ek 'Child' interface usko extend karke ek naya abstract method add kar deta hai, toh kya 'Child' interface functional rahega?
+Ans: Nahi, 'Child' interface ab functional nahi rahega.
+Ek functional interface mein sirf ek hi abstract method ho sakta hai. Jab 'Child' ne 'Parent' ko extend kiya, toh usne 'Parent' ka abstract method inherit kar liya. Jab aapne ek aur naya abstract method add kiya, toh 'Child' ke paas total do abstract methods ho gaye. Isliye, woh functional interface ki definition (Single Abstract Method - SAM) ko violate karta hai.
+Tricky Point (2025): Interviewer inheritance ka concept use karke confuse kar raha hai. Woh yeh check karna chahta hai ki aapko functional interface ka core rule (SAM) inheritance ke context mein bhi yaad hai ya nahi. Log sochte hain "extend kiya hai toh sab theek hoga", lekin rule to rule hai.
+2. Default Method ko Abstract Banana
+
+Q: Ek interface 'A' hai jismein sirf ek default method hai. Agar ek dusra interface 'B' usko extend karke us default method ko abstract declare kar de, toh kya 'B' ek functional interface ban jayega?
+Ans: Haan, bilkul! Interface 'B' ek valid functional interface hoga.
+Interface 'A' functional nahi tha kyunki uske paas koi abstract method nahi tha. Lekin jab 'B' ne uske default method ko override karke abstract bana diya, toh 'B' ke paas ab aakhir mein ek hi abstract method hai. Ye functional interface ki shart (single abstract method) poori karta hai.
+Tricky Point (2025): Yeh ek reverse psychology wala question hai. Interviewer aapse ummeed kar raha hai ki aap sochenge ki parent se kuch 'kam' ya 'badal' nahi sakte. Lekin yahan aap ek non-functional parent se ek functional child bana rahe hain. Yeh aapki interface inheritance aur default methods ki deep understanding ko test karta hai.
+
+3. @FunctionalInterface Annotation ka Asli Matlab
+Q: Ek functional interface 'Calculator' hai jismein int operate(int a, int b) method hai. Ek aur interface 'AdvancedCalculator' usse extend karta hai, lekin koi naya method add nahi karta. Kya 'AdvancedCalculator' par @FunctionalInterface annotation lagana zaroori hai?
+Ans: Nahi, zaroori (mandatory) nahi hai, lekin yeh ek good practice hai.
+'AdvancedCalculator' ne 'Calculator' ka abstract method operate() inherit kar liya hai, isliye woh by definition ek functional interface hai. @FunctionalInterface annotation sirf compiler ko batata hai ki "is interface ko functional hi rehna chahiye". Agar aap galti se ismein dusra abstract method daal denge, toh annotation error dega. Bina annotation ke bhi yeh functional hi hai.
+Tricky Point (2025): Interviewer yeh dekhna chahta hai ki aap annotation ko rule samajhte hain ya sirf ek tool. Kai developers sochte hain ki @FunctionalInterface lagane se hi koi interface functional banta hai. Asliyat yeh hai ki interface functional apne structure (SAM) ki wajah se hota hai, annotation sirf us structure ko enforce karne ka ek safety net hai.
+
+
+
+>>>>>>>>>
+
+
+Bilkul! Isi pattern ko follow karte hue, yahaan Java ke Executor Framework se jude 3 behad important aur tricky questions hain jo 2025 ke interviews mein aapki practical knowledge ko parakh sakte hain.
+1. Executors Factory Methods ka Production Trap
+Q: Production mein high-performance application ke liye, mein Executors.newFixedThreadPool(10) use kar raha hoon. Kya yeh ek accha approach hai?
+Ans: Nahi, production environment ke liye yeh aam taur par ek risky approach maana jaata hai.
+Executors.newFixedThreadPool() parde ke peeche ek LinkedBlockingQueue use karta hai jiski koi capacity limit nahi hoti (unbounded). Agar aapke application mein tasks produce hone ki speed, consume hone ki speed se zyada ho gayi, toh yeh queue badhti jayegi aur aakhir mein OutOfMemoryError de sakti hai. Behtar hai ki aap seedhe ThreadPoolExecutor class ka constructor use karein jismein aap queue ki capacity (bounded queue) bhi define kar sakte hain.
+Tricky Point (2025): Interviewer aapki theoretical knowledge se aage badhkar practical, production-level understanding test kar raha hai. Executors factory methods sikhne mein aasan hain, lekin unke hidden risks hote hain. Interviewer yeh dekhna chahta hai ki aap "convenience" aur "robustness" ke beech ka fark samajhte hain ya nahi.
+
+2. Exception Handling ka Labyrinth (submit() vs execute())
+Q: Maine executor.submit() se ek Callable task submit kiya jo andar se IOException throw karta hai. Jab mein future.get() call karunga, toh mujhe try-catch mein IOException milega, sahi hai na?
+Ans: Nahi, aapko direct IOException nahi milega. Aapko ExecutionException milega.
+Jab submit() se run kiya gaya task koi checked ya unchecked exception throw karta hai, toh Executor Framework us exception ko ExecutionException ke andar wrap kar deta hai. Asli IOException us ExecutionException ka "cause" hota hai. Aapko use getCause() method se nikalna padega.
+Generated java
+try {
+    Future<String> future = executor.submit(...);
+    future.get(); 
+} catch (ExecutionException e) {
+    // Asli exception yahan hai!
+    Throwable cause = e.getCause(); // Yeh hoga IOException
+}
+Tricky Point (2025): Yeh ek detail-oriented trap hai. Interviewer yeh check karna chahta hai ki aapne aysnchronous code mein error handling aakhir tak ki hai ya nahi. Jo developers sirf surface-level jante hain, woh original exception ko hi catch karne ki koshish karenge aur unka code fail ho jayega.
+
+3. shutdown() aur shutdownNow() ka Asli Fark
+Q: Mujhe ek ExecutorService ko turant band karna hai aur uske saare tasks ko rokna hai. Agar mein executor.shutdown() call karta hoon, toh kya running tasks bhi forun ruk jaayenge?
+Ans: Nahi! shutdown() running tasks ko nahi rokta.
+shutdown(): Yeh ek graceful shutdown hai. Yeh naye tasks lena band kar deta hai, lekin queue mein pade hue aur jo tasks abhi chal rahe hain, un sabko complete hone deta hai.
+shutdownNow(): Yeh ek forceful shutdown hai. Yeh naye tasks lena band karta hai, queue mein pade tasks ko process nahi karta (aur unki list return kar deta hai), aur jo tasks chal rahe hain, unhe Thread.interrupt() bhej kar rokne ki koshish karta hai.
+Tricky Point (2025): Interviewer aapki resource management ki samajh ko test kar raha hai. Dono methods ka naam milta-julta hai, lekin unka asar bilkul alag hai. Yeh janna zaroori hai ki kab data loss se bachne ke liye shutdown() use karna hai aur kab system ko forun free karne ke liye shutdownNow() use karna hai. Yeh aapke application ki stability aur data integrity ke liye critical hai.
+
+
+>>>>>>>
+
+Bilkul! Aapke diye gaye pattern ko follow karte hue, yahaan teen aam aur tricky questions hain jo "REST endpoint ko async kaise banayein" par 2025 ke interviews mein puche ja sakte hain:
+1. @Async ka Asli Matlab
+Q: "Aapne service method par @Async laga diya. Ab kya controller endpoint सच में async ho gaya? Client ko response kaise milega?"
+Ans: Nahi, akele @Async se endpoint fully async (non-blocking) nahi hota.
+Is approach mein, controller thread ab bhi block ho sakta hai. Agar aapki service method void ya koi normal object return karti hai, toh controller usko "fire-and-forget" maan lega aur client ko turant 200 OK bhej dega.
+Agar aap Future<String> return karte hain, aur controller mein .get() call karte hain, tab toh aapne async ka fayda hi kho diya, kyunki .get() blocking hota hai!
+Generated java
+// Controller
+@GetMapping("/data")
+public String getData() throws Exception {
+    Future<String> futureData = myAsyncService.fetchData();
+    return futureData.get(); // Yahaan thread block ho gaya! Async ka fayda nahi mila.
+}
+Use code with caution.
+Java
+Tricky Point (2025): Interviewer yeh check karna chahta hai ki aap "task ko background mein bhejne" aur "HTTP request ko non-blocking banane" ke beech ka fark samajhte hain ya nahi. Asli scalability tab aati hai jab web server ka request thread free ho, jo akele @Async se nahi hota.
+2. CompletableFuture ka Jadoo
+Q: "Aap CompletableFuture return kar rahe hain. Isse @Async use karke .get() call karne se kya alag fayda hai? Performance mein kya farak padega?"
+Ans: Main difference thread management aur scalability ka hai. CompletableFuture return karne se web server (jaise Tomcat) ka request thread block nahi hota.
+Jab aap controller se CompletableFuture<ResponseEntity<?>> return karte hain, Spring MVC samajh jaata hai ki kaam abhi chal raha hai. Wo request thread ko turant free kar deta hai aur wapas thread pool mein bhej deta hai taaki woh dusre incoming requests ko handle kar sake. Jab background task (CompletableFuture) poora hota hai, tab server ek doosre thread ka use karke response client ko bhejta hai.
+Isse kam threads mein zyada concurrent requests handle ki ja sakti hain.
+Tricky Point (2025): Interviewer sirf CompletableFuture keyword nahi sunna chahta. Woh aapse "Servlet 3.0+ Async Support" ya "non-blocking I/O" jaise concepts expect kar raha hai. Unhe yeh janna hai ki aap resource (thread) optimization ko gehrayi se samajhte hain aur iska real-world impact bata sakte hain.
+3. Async Failure aur Timeouts
+Q: "Agar aapka async task fail ho gaya ya bahut time le raha hai, toh client ko kya response jayega? Aap isko kaise handle karenge?"
+Ans: By default, client ko ya toh ek generic 500 Internal Server Error milega, ya request timeout ho jayegi. Isko gracefully handle karna padta hai.
+CompletableFuture iske liye built-in methods deta hai.
+Exception Handling: .exceptionally() block ka use karke hum exception ko pakad sakte hain aur ek meaningful error response (jaise 400 Bad Request) bana sakte hain.
+Timeout Handling: .orTimeout() ka use karke hum ek time limit set kar sakte hain. Agar task us time mein poora nahi hua, toh TimeoutException throw hogi, jise hum .exceptionally() se handle karke 503 Service Unavailable jaisa status bhej sakte hain.
+Generated java
+@GetMapping("/data-robust")
+public CompletableFuture<ResponseEntity<String>> getDataWithHandling() {
+    return myAsyncService.fetchData()
+        .orTimeout(2, TimeUnit.SECONDS) // 2 second ka timeout
+        .thenApply(ResponseEntity::ok) // Success case
+        .exceptionally(ex -> { // Failure ya timeout case
+            if (ex.getCause() instanceof TimeoutException) {
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Try again later");
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        });
+}
+Use code with caution.
+Java
+Tricky Point (2025): Happy path (success case) sab bata dete hain. Interviewer aapki production-readiness test kar raha hai. Woh dekhna chahta hai ki kya aapne async systems ke common pitfalls (errors on other threads, timeouts) face kiye hain aur unhe solve karna jaante hain. Ye question experience aur theory ke beech ka bridge hai.
